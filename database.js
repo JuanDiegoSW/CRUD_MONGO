@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 //const { connect } = require('./server')
-//const MONGODB_URI = 'mongodb+srv://admin2021:admin2021@cluster0.b4feb.mongodb.net/database'
+const MONGODB_URI = 'mongodb+srv://admin2021:admin2021@cluster0.b4feb.mongodb.net/database'
 //const MONGODB_URI = 'mongodb+srv://admindb:12345@dbmyfirstapp.sqjx6.mongodb.net/DBTest'
 
 
@@ -9,7 +9,7 @@ const mongoose = require('mongoose')
 const dbConnection = async() =>{
     try {
 
-        await mongoose.connect( process.env.MONGODB_CNN, {
+        await mongoose.connect( MONGODB_URI, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
