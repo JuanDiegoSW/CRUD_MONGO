@@ -4,14 +4,12 @@ const bcryptjs = require('bcryptjs');
 const indexUsuario = {};
 const Usuario = require('../models/usuario');
 
-
-
 indexUsuario.usuariosGet = async(req = request, res = response) => {
     
     const usuarios = await Usuario.find({}).lean();
-    const titulo = "Usuarios CRUD"
-    //console.log(usuarios)
-    res.render('usuarios/index',{usuarios,titulo});
+    //const titulo = "Usuarios CRUD"
+    
+    res.render('usuarios/index',{usuarios});
 }
 
 indexUsuario.usuariosPost = async(req, res = response) => {
@@ -23,18 +21,12 @@ indexUsuario.usuariosCreate = async(req, res) => {
     const usuario = new Usuario({ nombre, correo, password, rol,img });
 
     // Encriptar la contraseña
-    const salt = bcryptjs.genSaltSync();
-    usuario.password = bcryptjs.hashSync( password, salt );
+    //const salt = bcryptjs.genSaltSync();
+    //usuario.password = bcryptjs.hashSync( password, salt );
 
     // Guardar en BD
     await usuario.save();
     res.redirect('/');
-/*
-    res.json({
-        usuario
-    });*/
-    //console.log(req.body)
-    //res.render('usuarios/new-user');
     
 }
 indexUsuario.editUsuario = async (req,res) =>{
@@ -47,7 +39,7 @@ indexUsuario.editUsuario = async (req,res) =>{
 indexUsuario.usuariosPut = async(req, res = response) => {
     
     const { id } = req.params;
-    const { _id, password, google, correo, ...resto } = req.body;
+    const { _id, password, google, ...resto } = req.body;
 
     if ( password ) {
         // Encriptar la contraseña
@@ -78,14 +70,4 @@ indexUsuario.usuariosDelete = async(req, res = response) => {
 
     //res.json(usuario);
 }
-
-
-
 module.exports = indexUsuario;
-/*module.exports = {
-    usuariosGet,
-    usuariosPost,
-    usuariosPut,
-    usuariosPatch,
-    usuariosDelete,
-}*/

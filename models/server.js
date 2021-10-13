@@ -2,9 +2,11 @@ const express =  require('express')
 const exphbs = require('express-handlebars')
 const path =  require('path')
 const cors = require('cors')
+const session = require('express-session')
 const methodOverride = require('method-override');
 const {dbConnection} = require('../database');
-
+const passport = require('passport');
+///const MongoStore = require('connect-mongo');
 
 class Server {
     constructor(){
@@ -21,8 +23,8 @@ class Server {
             partialsDir: path.join(this.app.get('views'),'../views/partials'),
             extname: '.hbs'
         }));
+      
         
-
         // Conectar a base de datos
         this.conectarDB();
 
@@ -32,31 +34,20 @@ class Server {
         // Rutas de mi aplicación
         this.routes();
     }
-
-
-//const app = express()
-
-//configuraciones
-//app.set('port',process.env.PORT || 4000)
-//app.set('views', path.join(__dirname,'views'))
-
-
-/*app.engine('.hbs',exphbs({
-    defaultLayout: 'main',
-    layoutsDir: path.join(app.get('views'),'/layouts'),
-    partialsDir: path.join(app.get('views'),'/partials'),
-    extname: '.hbs'
-}));*/
-
-//app.set('view engine','.hbs');
-
-//middlewares
 async conectarDB() {
     await dbConnection();
 }
 middlewares(){
     this.app.use(express.urlencoded({extended:false}));
     this.app.use(methodOverride('_method'));
+    //PASSPORT
+    this.app.use(session({
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true,
+      }));
+      this.app.use(passport.initialize());
+      this.app.use(passport.session());
     // CORS
     this.app.use( cors() );
 
@@ -71,6 +62,9 @@ middlewares(){
 //routes
 routes() {
     this.app.use( require('../routes/usuarios'));
+    this.app.use( require('../routes/categorias'));
+    this.app.use( require('../routes/productos'));
+    this.app.use( require('../routes/login'));
     
 }
 
@@ -79,19 +73,5 @@ listen(){
         console.log('Servidor corriendo en puerto', this.port );
     });
 }
-/*
-app.use(require('./routes/documentos.route'));
-app.use(require('./routes/tipodocumentos.route'));
-app.use(require('./routes/entidades.route'));
-app.use(require('./routes/series.route'));
-app.use(require('./routes/detalles.route'));*/
-
-
-/*execution(){
-    this.app.get('/',(req,res) =>{
-        res.render('tipodocumentos/lista_tipodocumentos')
-    });
-    
-    }*/
 }
 module.exports = Server;
